@@ -1,0 +1,32 @@
+{
+  "name": "Drupal Cloud",
+  "short_name": "Drupal Cloud",
+  "description": "Modern headless CMS powered by Drupal with Next.js frontend",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon.tsx",
+      "sizes": "32x32",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/apple-icon.tsx",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon.ico",
+      "sizes": "16x16 32x32",
+      "type": "image/x-icon"
+    }
+  ],
+  "categories": ["developer", "cms", "productivity"],
+  "lang": "en",
+  "dir": "ltr"
+}
