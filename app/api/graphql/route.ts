@@ -12,7 +12,6 @@ let tokenCache: TokenCache = {
 
 async function getAccessToken(): Promise<string | null> {
   if (!process.env.DRUPAL_CLIENT_ID || !process.env.DRUPAL_CLIENT_SECRET) {
-    console.log('Missing OAuth credentials')
     return null
   }
 
@@ -23,7 +22,6 @@ async function getAccessToken(): Promise<string | null> {
 
   try {
     const tokenUrl = `${process.env.NEXT_PUBLIC_DRUPAL_BASE_URL}/oauth/token`
-    console.log('Requesting token from:', tokenUrl)
     
     const response = await fetch(tokenUrl, {
       method: 'POST',
@@ -39,16 +37,12 @@ async function getAccessToken(): Promise<string | null> {
     })
 
     if (!response.ok) {
-      const errorText = await response.text()
-      console.error('Token request failed:', response.status, errorText)
       return null
     }
 
     const data = await response.json()
-    console.log('Token response received')
     
     if (!data.access_token) {
-      console.error('No access token in response:', data)
       return null
     }
     
@@ -68,7 +62,6 @@ async function getAccessToken(): Promise<string | null> {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.text()
-    console.log('GraphQL request body:', body)
     
     // Get access token for authentication
     const accessToken = await getAccessToken()
@@ -81,13 +74,9 @@ export async function POST(request: NextRequest) {
     // Add auth token if available
     if (accessToken) {
       headers['Authorization'] = accessToken
-      console.log('Using authorization token')
-    } else {
-      console.log('No authorization token available')
     }
     
     const graphqlUrl = `${process.env.NEXT_PUBLIC_DRUPAL_BASE_URL}/graphql`
-    console.log('Making GraphQL request to:', graphqlUrl)
     
     const response = await fetch(graphqlUrl, {
       method: 'POST',
@@ -95,23 +84,7 @@ export async function POST(request: NextRequest) {
       body,
     })
 
-    console.log('GraphQL response status:', response.status)
     const data = await response.text()
-    
-    if (!response.ok) {
-      console.error('GraphQL request failed:', response.status, data)
-    } else {
-      // Log the response for debugging
-      try {
-        const parsed = JSON.parse(data)
-        console.log('GraphQL response data:', JSON.stringify(parsed, null, 2))
-        if (parsed.errors) {
-          console.error('GraphQL errors:', parsed.errors)
-        }
-      } catch (e) {
-        console.log('Raw GraphQL response:', data)
-      }
-    }
     
     return new NextResponse(data, {
       status: response.status,
