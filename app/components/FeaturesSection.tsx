@@ -1,5 +1,5 @@
-import { DrupalHomepage, FeatureItem, isDrupalFeature, isDefaultFeature } from '@/lib/types'
-import { DEFAULT_FEATURES } from '@/lib/constants'
+import { DrupalHomepage } from '@/lib/types'
+import { FEATURE_COLORS } from '@/lib/constants'
 import FeatureIcon from './FeatureIcon'
 
 interface FeaturesSectionProps {
@@ -9,12 +9,10 @@ interface FeaturesSectionProps {
 export default function FeaturesSection({ homepageContent }: FeaturesSectionProps) {
   const hasHomepageContent = homepageContent && homepageContent.title
   
-  // Check if Drupal features have icon data, otherwise use defaults
-  const drupalFeatures = hasHomepageContent && homepageContent.featuresItems?.length ? homepageContent.featuresItems : null
-  const hasIconData = drupalFeatures && drupalFeatures.some(f => 'icon' in f && f.icon)
-  
-  const features: FeatureItem[] = hasIconData ? drupalFeatures : DEFAULT_FEATURES
-
+  // Use Drupal features if available, otherwise show nothing (no fallback features)
+  const features = hasHomepageContent && homepageContent.featuresItems?.length 
+    ? homepageContent.featuresItems 
+    : []
 
   return (
     <section className="py-24">
@@ -35,33 +33,36 @@ export default function FeaturesSection({ homepageContent }: FeaturesSectionProp
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {features.map((feature) => {
-            // Since we're using DEFAULT_FEATURES when no Drupal content, these will be DefaultFeature objects
-            const iconName = isDefaultFeature(feature) ? feature.iconName : (feature.icon || 'database')
-            const iconColor = isDefaultFeature(feature) ? feature.iconColor : 'blue' as const
-            const title = isDefaultFeature(feature) ? feature.title : feature.featureTitle
-            const description = isDefaultFeature(feature) ? feature.description : feature.featureDescription?.processed
+        {features.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {features.map((feature, index) => {
+              // Cycle through colors based on index
+              const iconColor = FEATURE_COLORS[index % FEATURE_COLORS.length]
+              const iconName = feature.icon || 'database'
+              const title = feature.featureTitle
+              const description = feature.featureDescription?.processed
 
-
-            return (
-              <div key={feature.id} className="bg-white p-8 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
-                <FeatureIcon 
-                  iconName={iconName} 
-                  iconColor={iconColor as any}
-                />
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">{title}</h3>
-                <div className="text-gray-600">
-                  {isDrupalFeature(feature) ? (
+              return (
+                <div key={feature.id} className="bg-white p-8 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
+                  <FeatureIcon 
+                    iconName={iconName} 
+                    iconColor={iconColor}
+                  />
+                  <h3 className="text-xl font-semibold text-gray-900 mb-3">{title}</h3>
+                  <div className="text-gray-600">
                     <div dangerouslySetInnerHTML={{ __html: description || '' }} />
-                  ) : (
-                    <p>{description}</p>
-                  )}
+                  </div>
                 </div>
-              </div>
-            )
-          })}
-        </div>
+              )
+            })}
+          </div>
+        )}
+
+        {features.length === 0 && (
+          <div className="text-center py-12">
+            <p className="text-gray-500">No features available. Please add features in Drupal.</p>
+          </div>
+        )}
       </div>
     </section>
   )
