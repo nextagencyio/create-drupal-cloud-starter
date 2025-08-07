@@ -1,7 +1,7 @@
 import './globals.css'
 import { Inter } from 'next/font/google'
 import ApolloProvider from './components/providers/ApolloProvider'
-import { Viewport } from 'next'
+import { Viewport, type Metadata } from 'next'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -11,7 +11,22 @@ export const viewport: Viewport = {
   maximumScale: 1,
 }
 
-export const metadata = {
+function getSiteUrl(): string {
+  // Prefer an explicit site URL when provided.
+  const explicit = process.env.NEXT_PUBLIC_SITE_URL
+  if (explicit) return explicit.replace(/\/$/, '')
+
+  // Vercel environment provides VERCEL_URL without protocol.
+  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`
+
+  // Fallback to localhost using detected PORT or default 3000.
+  const port = process.env.PORT || '3000'
+  const host = process.env.HOST || 'localhost'
+  return `http://${host}:${port}`
+}
+
+export const metadata: Metadata = {
+  metadataBase: new URL(getSiteUrl()),
   title: {
     default: 'Drupal Cloud',
     template: '%s | Drupal Cloud'

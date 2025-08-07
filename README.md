@@ -57,7 +57,7 @@ A comprehensive Next.js starter template for building modern headless websites w
    npm run dev
    ```
 
-4. **Open [http://localhost:3000](http://localhost:3000)** to see your site.
+4. **Open [http://localhost:3001](http://localhost:3001)** to see your site.
 
 ## Environment Variables
 

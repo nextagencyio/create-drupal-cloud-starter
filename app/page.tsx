@@ -4,7 +4,8 @@ import FeaturesSection from './components/FeaturesSection'
 import CTASection from './components/CTASection'
 import ErrorBoundary from './components/ErrorBoundary'
 import { Metadata } from 'next'
-import client from '../lib/apollo-client'
+import { headers } from 'next/headers'
+import { getServerApolloClient } from '../lib/apollo-client'
 import { GET_HOMEPAGE_DATA } from '../lib/queries'
 import { HomepageData } from '../lib/types'
 
@@ -12,9 +13,9 @@ import { HomepageData } from '../lib/types'
 export const revalidate = 3600
 
 
-async function getHomepageData(): Promise<HomepageData | null> {
+async function getHomepageData(apolloClient: ReturnType<typeof getServerApolloClient>): Promise<HomepageData | null> {
   try {
-    const { data } = await client.query<HomepageData>({
+    const { data } = await apolloClient.query<HomepageData>({
       query: GET_HOMEPAGE_DATA,
       fetchPolicy: 'cache-first', // Use cache for ISR
     })
@@ -48,13 +49,15 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Home() {
-  const data = await getHomepageData()
+  const requestHeaders = headers()
+  const apolloClient = getServerApolloClient(requestHeaders)
+  const data = await getHomepageData(apolloClient)
   const homepageContent = data?.nodeHomepages?.nodes?.[0]
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-      
+
       <ErrorBoundary>
         <HeroSection homepageContent={homepageContent} />
       </ErrorBoundary>

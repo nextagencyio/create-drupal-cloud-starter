@@ -1,7 +1,8 @@
 import Header from '../components/Header'
 import ArticleTeaser from '../components/ArticleTeaser'
 import ErrorBoundary from '../components/ErrorBoundary'
-import client from '@/lib/apollo-client'
+import { headers } from 'next/headers'
+import { getServerApolloClient } from '@/lib/apollo-client'
 import { GET_ARTICLE_TEASERS } from '@/lib/queries'
 import { ArticleTeaserData } from '@/lib/types'
 import { Metadata } from 'next'
@@ -14,9 +15,9 @@ export const metadata: Metadata = {
   description: 'Discover the latest insights, tutorials, and updates from the Drupal Cloud community.',
 }
 
-async function getArticles(): Promise<ArticleTeaserData | null> {
+async function getArticles(apolloClient: ReturnType<typeof getServerApolloClient>): Promise<ArticleTeaserData | null> {
   try {
-    const { data } = await client.query<ArticleTeaserData>({
+    const { data } = await apolloClient.query<ArticleTeaserData>({
       query: GET_ARTICLE_TEASERS,
       variables: { first: 12 },
       fetchPolicy: 'cache-first',
@@ -52,8 +53,10 @@ function ErrorState({ error }: { error: string }) {
 }
 
 export default async function Articles() {
-  const data = await getArticles()
-  
+  const requestHeaders = headers()
+  const apolloClient = getServerApolloClient(requestHeaders)
+  const data = await getArticles(apolloClient)
+
   if (!data) {
     return (
       <div className="min-h-screen bg-gray-50">
@@ -78,7 +81,7 @@ export default async function Articles() {
             Discover the latest insights, tutorials, and updates from the Drupal Cloud community.
           </p>
         </div>
-        
+
         {articles.length === 0 ? (
           <div className="text-center py-16">
             <div className="bg-white rounded-lg shadow-sm p-12">
@@ -89,7 +92,7 @@ export default async function Articles() {
               </div>
               <h2 className="text-2xl font-semibold text-gray-900 mb-4">No articles found</h2>
               <p className="text-gray-600 mb-8 max-w-md mx-auto">
-                It looks like there are no articles available yet. This could be because your Drupal backend 
+                It looks like there are no articles available yet. This could be because your Drupal backend
                 isn&apos;t configured properly or no content has been created yet.
               </p>
               <div className="bg-gray-50 rounded-lg p-6 text-left max-w-lg mx-auto">
