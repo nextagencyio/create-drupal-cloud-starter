@@ -17,17 +17,19 @@ export default function DynamicIcon({ iconName, className }: DynamicIconProps) {
       return
     }
 
+    const normalized = String(iconName).trim().toLowerCase()
+
     // Map icon names to correct Lucide names
     const iconNameMap: Record<string, string> = {
       'database': 'Database',
       'zap': 'Zap',
-      'shield': 'Shield', 
+      'shield': 'Shield',
       'users': 'Users',
       'code': 'Code',
       'globe': 'Globe'
     }
 
-    const lucideIconName = iconNameMap[iconName]
+    const lucideIconName = iconNameMap[normalized]
 
     if (!lucideIconName) {
       console.warn(`No mapping found for icon "${iconName}", using Database as fallback`)
@@ -40,7 +42,7 @@ export default function DynamicIcon({ iconName, className }: DynamicIconProps) {
       try {
         const lucideModule = await import('lucide-react')
         const icon = (lucideModule as any)[lucideIconName]
-        
+
         if (icon) {
           setIconComponent(() => icon)
         } else {
