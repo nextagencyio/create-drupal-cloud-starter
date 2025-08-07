@@ -1,6 +1,7 @@
 import Header from './components/Header'
 import Link from 'next/link'
-import { ArrowRight, Database, Zap, Shield, Users, Code, Globe } from 'lucide-react'
+import { ArrowRight, Database, type LucideIcon } from 'lucide-react'
+import { lazy, Suspense } from 'react'
 import { Metadata } from 'next'
 import client from '../lib/apollo-client'
 import { GET_HOMEPAGE_DATA } from '../lib/queries'
@@ -8,6 +9,46 @@ import { HomepageData } from '../lib/types'
 
 // Force dynamic rendering to avoid caching
 export const dynamic = 'force-dynamic'
+
+// Dynamic icon component
+function DynamicIcon({ iconName, className }: { iconName?: string; className?: string }) {
+  if (!iconName) {
+    return <Database className={className} />
+  }
+
+  // Convert kebab-case to PascalCase for Lucide icon names
+  const pascalCaseName = iconName
+    .split('-')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join('')
+
+  try {
+    // Dynamically import the icon
+    const IconComponent = lazy(async () => {
+      try {
+        const module = await import('lucide-react')
+        const icon = (module as any)[pascalCaseName]
+        if (icon) {
+          return { default: icon }
+        }
+        // Fallback to Database if icon not found
+        return { default: Database }
+      } catch (error) {
+        console.warn(`Icon "${iconName}" not found, using Database as fallback`)
+        return { default: Database }
+      }
+    })
+
+    return (
+      <Suspense fallback={<Database className={className} />}>
+        <IconComponent className={className} />
+      </Suspense>
+    )
+  } catch (error) {
+    console.warn(`Error loading icon "${iconName}", using Database as fallback`)
+    return <Database className={className} />
+  }
+}
 
 async function getHomepageData(): Promise<HomepageData | null> {
   try {
@@ -63,42 +104,42 @@ export default async function Home() {
       id: '1',
       title: 'Powerful CMS',
       description: 'Leverage Drupal\'s robust content management capabilities with custom content types, workflows, and user permissions.',
-      icon: Database,
+      iconName: 'database',
       iconColor: 'blue'
     },
     {
       id: '2',
       title: 'Lightning Fast',
       description: 'Next.js provides server-side rendering, static generation, and optimized performance for blazing-fast user experiences.',
-      icon: Zap,
+      iconName: 'zap',
       iconColor: 'green'
     },
     {
       id: '3',
       title: 'Enterprise Security',
       description: 'Built-in security features, OAuth2 authentication, and role-based access control keep your content safe and secure.',
-      icon: Shield,
+      iconName: 'shield',
       iconColor: 'purple'
     },
     {
       id: '4',
       title: 'Developer Friendly',
       description: 'GraphQL API, TypeScript support, and modern tooling make development efficient and enjoyable for your team.',
-      icon: Users,
+      iconName: 'users',
       iconColor: 'yellow'
     },
     {
       id: '5',
       title: 'Modern Stack',
       description: 'React components, Tailwind CSS, and the latest web technologies ensure your project stays current and maintainable.',
-      icon: Code,
+      iconName: 'code',
       iconColor: 'red'
     },
     {
       id: '6',
       title: 'Global Scale',
       description: 'Deploy anywhere with edge computing, CDN integration, and optimized performance for users worldwide.',
-      icon: Globe,
+      iconName: 'globe',
       iconColor: 'indigo'
     }
   ]
@@ -171,7 +212,9 @@ export default async function Home() {
             {(hasHomepageContent && homepageContent.featuresItems?.length ? homepageContent.featuresItems : defaultFeatures).map((feature) => {
               // Handle both dynamic features from Drupal and default features
               const isDynamicFeature = 'featureDescription' in feature
-              const IconComponent = isDynamicFeature ? Database : (feature as any).icon // Default to Database icon for dynamic features
+              const iconName = isDynamicFeature
+                ? (feature as any).icon || 'database'
+                : (feature as any).iconName
               const iconColor = isDynamicFeature ? 'blue' : (feature as any).iconColor
               const title = isDynamicFeature ? (feature as any).featureTitle : feature.title
               const description = isDynamicFeature ? (feature as any).featureDescription?.processed : (feature as any).description
@@ -188,11 +231,15 @@ export default async function Home() {
               return (
                 <div key={feature.id} className="bg-white p-8 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
                   <div className={`w-12 h-12 ${colorClasses[iconColor as keyof typeof colorClasses]} rounded-lg flex items-center justify-center mb-6`}>
-                    <IconComponent className="w-6 h-6" />
+                    <DynamicIcon iconName={iconName} className="w-6 h-6" />
                   </div>
                   <h3 className="text-xl font-semibold text-gray-900 mb-3">{title}</h3>
                   <div className="text-gray-600">
-                    <p>{description}</p>
+                    {isDynamicFeature ? (
+                      <div dangerouslySetInnerHTML={{ __html: description }} />
+                    ) : (
+                      <p>{description}</p>
+                    )}
                   </div>
                 </div>
               )

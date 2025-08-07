@@ -60,6 +60,7 @@ export interface DrupalFeature {
   featureDescription?: {
     processed: string
   }
+  icon?: string
 }
 
 export interface HomepageData {
