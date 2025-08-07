@@ -17,38 +17,32 @@ export default function DynamicIcon({ iconName, className }: DynamicIconProps) {
       return
     }
 
-    const normalized = String(iconName).trim().toLowerCase()
+    const raw = String(iconName).trim()
 
-    // Map icon names to correct Lucide names
-    const iconNameMap: Record<string, string> = {
-      'database': 'Database',
-      'zap': 'Zap',
-      'shield': 'Shield',
-      'users': 'Users',
-      'code': 'Code',
-      'globe': 'Globe'
+    const toPascalCase = (value: string) => {
+      return value
+        .replace(/[^a-zA-Z0-9]+/g, ' ')
+        .split(' ')
+        .filter(Boolean)
+        .map(part => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
+        .join('')
     }
 
-    const lucideIconName = iconNameMap[normalized]
-
-    if (!lucideIconName) {
-      console.warn(`No mapping found for icon "${iconName}", using Database as fallback`)
-      setIconComponent(() => Database)
-      return
-    }
+    const candidates = Array.from(new Set([
+      raw,
+      toPascalCase(raw),
+      toPascalCase(raw.toLowerCase()),
+    ]))
 
     // Load the icon dynamically (same approach as test page)
     const loadIcon = async () => {
       try {
         const lucideModule = await import('lucide-react')
-        const icon = (lucideModule as any)[lucideIconName]
+        const iconExport = candidates
+          .map(name => (lucideModule as any)[name])
+          .find(Boolean)
 
-        if (icon) {
-          setIconComponent(() => icon)
-        } else {
-          console.warn(`Icon ${lucideIconName} not found`)
-          setIconComponent(() => Database)
-        }
+        setIconComponent(() => (iconExport || Database))
       } catch (error) {
         console.error(`Error loading icon:`, error)
         setIconComponent(() => Database)

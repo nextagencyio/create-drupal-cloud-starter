@@ -8,11 +8,14 @@ interface FeaturesSectionProps {
 
 export default function FeaturesSection({ homepageContent }: FeaturesSectionProps) {
   const hasHomepageContent = homepageContent && homepageContent.title
-  
-  // Use Drupal features if available, otherwise show nothing (no fallback features)
-  const features = hasHomepageContent && homepageContent.featuresItems?.length 
-    ? homepageContent.featuresItems 
-    : []
+
+  // Normalize features array from possible GraphQL shapes (direct array or edges -> node).
+  const rawFeatures: any = hasHomepageContent ? (homepageContent as any).featuresItems : null
+  const features = Array.isArray(rawFeatures)
+    ? rawFeatures
+    : Array.isArray(rawFeatures?.edges)
+      ? rawFeatures.edges.map((e: any) => e?.node).filter(Boolean)
+      : []
 
   function inferIconFromText(title?: string, descriptionHtml?: string): string | undefined {
     const haystack = `${title || ''} ${(descriptionHtml || '').replace(/<[^>]+>/g, ' ')}`.toLowerCase()
@@ -56,8 +59,8 @@ export default function FeaturesSection({ homepageContent }: FeaturesSectionProp
 
               return (
                 <div key={feature.id} className="bg-white p-8 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
-                  <FeatureIcon 
-                    iconName={iconName} 
+                  <FeatureIcon
+                    iconName={iconName}
                     iconColor={iconColor}
                   />
                   <h3 className="text-xl font-semibold text-gray-900 mb-3">{title}</h3>
