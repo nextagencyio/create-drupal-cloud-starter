@@ -2,10 +2,11 @@
 
 import DynamicIcon from './DynamicIcon'
 import { COLOR_CLASSES } from '@/lib/constants'
+import { FeatureColor } from '@/lib/types'
 
 interface FeatureIconProps {
   iconName: string
-  iconColor: 'blue' | 'green' | 'purple' | 'yellow' | 'red' | 'indigo'
+  iconColor: FeatureColor
   className?: string
 }
 

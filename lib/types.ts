@@ -75,23 +75,5 @@ export interface HomepageData {
   }
 }
 
-// Default feature interface for fallback data
-export interface DefaultFeature {
-  id: string
-  title: string
-  description: string
-  iconName: string
-  iconColor: 'blue' | 'green' | 'purple' | 'yellow' | 'red' | 'indigo'
-}
-
-// Union type for features
-export type FeatureItem = DrupalFeature | DefaultFeature
-
-// Type guards
-export function isDrupalFeature(feature: FeatureItem): feature is DrupalFeature {
-  return 'featureTitle' in feature && 'featureDescription' in feature
-}
-
-export function isDefaultFeature(feature: FeatureItem): feature is DefaultFeature {
-  return 'title' in feature && 'description' in feature && 'iconName' in feature && 'iconColor' in feature
-}
+// Feature color type
+export type FeatureColor = 'blue' | 'green' | 'purple' | 'yellow' | 'red' | 'indigo'
