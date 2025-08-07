@@ -86,14 +86,27 @@ export async function POST(request: NextRequest) {
 
     const data = await response.text()
     
+    const corsHeaders: Record<string, string> = {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    }
+
+    // Set CORS origin based on environment
+    if (process.env.NODE_ENV === 'development') {
+      corsHeaders['Access-Control-Allow-Origin'] = '*'
+    } else {
+      // In production, only allow requests from the same origin
+      const origin = request.headers.get('origin')
+      const host = request.headers.get('host')
+      if (origin && host && new URL(origin).host === host) {
+        corsHeaders['Access-Control-Allow-Origin'] = origin
+      }
+    }
+
     return new NextResponse(data, {
       status: response.status,
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-      },
+      headers: corsHeaders,
     })
   } catch (error) {
     console.error('GraphQL proxy error:', error)
@@ -108,13 +121,26 @@ export async function GET(request: NextRequest) {
   return POST(request)
 }
 
-export async function OPTIONS() {
+export async function OPTIONS(request: NextRequest) {
+  const corsHeaders: Record<string, string> = {
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  }
+
+  // Set CORS origin based on environment
+  if (process.env.NODE_ENV === 'development') {
+    corsHeaders['Access-Control-Allow-Origin'] = '*'
+  } else {
+    // In production, only allow requests from the same origin
+    const origin = request.headers.get('origin')
+    const host = request.headers.get('host')
+    if (origin && host && new URL(origin).host === host) {
+      corsHeaders['Access-Control-Allow-Origin'] = origin
+    }
+  }
+
   return new NextResponse(null, {
     status: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    },
+    headers: corsHeaders,
   })
 }

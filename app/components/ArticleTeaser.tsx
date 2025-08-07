@@ -19,6 +19,20 @@ export default function ArticleTeaser({ article }: ArticleTeaserProps) {
 
   return (
     <article className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-200">
+      {article.image?.url && (
+        <div className="relative h-48 w-full">
+          <Image
+            src={article.image.url}
+            alt={article.image.alt || article.title}
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            priority={false}
+            loading="lazy"
+          />
+        </div>
+      )}
+      
       <div className="p-6">
         <div className="flex items-center gap-2 text-sm text-gray-500 mb-2">
           <time dateTime={new Date(article.created.timestamp * 1000).toISOString()}>

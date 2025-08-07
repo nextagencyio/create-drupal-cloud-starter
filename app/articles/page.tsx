@@ -1,50 +1,71 @@
-'use client'
-
-import { useQuery } from '@apollo/client'
 import Header from '../components/Header'
 import ArticleTeaser from '../components/ArticleTeaser'
+import ErrorBoundary from '../components/ErrorBoundary'
+import client from '@/lib/apollo-client'
 import { GET_ARTICLE_TEASERS } from '@/lib/queries'
 import { ArticleTeaserData } from '@/lib/types'
+import { Metadata } from 'next'
 
-export default function Articles() {
-  const { loading, error, data } = useQuery<ArticleTeaserData>(GET_ARTICLE_TEASERS, {
-    variables: { first: 12 }
-  })
+// Enable ISR with 30 minute revalidation for articles
+export const revalidate = 1800
 
-  if (loading) {
+export const metadata: Metadata = {
+  title: 'Articles - Drupal Cloud',
+  description: 'Discover the latest insights, tutorials, and updates from the Drupal Cloud community.',
+}
+
+async function getArticles(): Promise<ArticleTeaserData | null> {
+  try {
+    const { data } = await client.query<ArticleTeaserData>({
+      query: GET_ARTICLE_TEASERS,
+      variables: { first: 12 },
+      fetchPolicy: 'cache-first',
+    })
+    return data
+  } catch (error) {
+    console.error('Error fetching articles:', error)
+    return null
+  }
+}
+
+function LoadingState() {
+  return (
+    <div className="text-center py-12">
+      <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      <p className="mt-4 text-gray-600">Loading articles...</p>
+    </div>
+  )
+}
+
+function ErrorState({ error }: { error: string }) {
+  return (
+    <div className="text-center py-12">
+      <div className="bg-white rounded-lg shadow-sm p-8">
+        <p className="text-red-600 text-lg mb-2">Error loading articles</p>
+        <p className="text-gray-600 mb-4">{error}</p>
+        <p className="text-sm text-gray-500">
+          Make sure your Drupal backend is running and GraphQL is configured properly.
+        </p>
+      </div>
+    </div>
+  )
+}
+
+export default async function Articles() {
+  const data = await getArticles()
+  
+  if (!data) {
     return (
       <div className="min-h-screen bg-gray-50">
         <Header />
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="text-center py-12">
-            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-            <p className="mt-4 text-gray-600">Loading articles...</p>
-          </div>
+          <ErrorState error="Failed to load articles from the server." />
         </main>
       </div>
     )
   }
 
-  if (error) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <Header />
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="text-center py-12">
-            <div className="bg-white rounded-lg shadow-sm p-8">
-              <p className="text-red-600 text-lg mb-2">Error loading articles</p>
-              <p className="text-gray-600 mb-4">{error.message}</p>
-              <p className="text-sm text-gray-500">
-                Make sure your Drupal backend is running and GraphQL is configured properly.
-              </p>
-            </div>
-          </div>
-        </main>
-      </div>
-    )
-  }
-
-  const articles = data?.nodeArticles?.nodes || []
+  const articles = data.nodeArticles?.nodes || []
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -69,7 +90,7 @@ export default function Articles() {
               <h2 className="text-2xl font-semibold text-gray-900 mb-4">No articles found</h2>
               <p className="text-gray-600 mb-8 max-w-md mx-auto">
                 It looks like there are no articles available yet. This could be because your Drupal backend 
-                isn't configured properly or no content has been created yet.
+                isn&apos;t configured properly or no content has been created yet.
               </p>
               <div className="bg-gray-50 rounded-lg p-6 text-left max-w-lg mx-auto">
                 <h3 className="font-medium text-gray-900 mb-3">To get started:</h3>
@@ -95,11 +116,13 @@ export default function Articles() {
             </div>
           </div>
         ) : (
-          <>
+          <ErrorBoundary>
             {/* Articles Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {articles.map((article) => (
-                <ArticleTeaser key={article.id} article={article} />
+                <ErrorBoundary key={article.id}>
+                  <ArticleTeaser article={article} />
+                </ErrorBoundary>
               ))}
             </div>
 
@@ -115,7 +138,7 @@ export default function Articles() {
                 </button>
               </div>
             )}
-          </>
+          </ErrorBoundary>
         )}
       </main>
     </div>

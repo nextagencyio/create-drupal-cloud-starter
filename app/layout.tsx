@@ -1,8 +1,15 @@
 import './globals.css'
 import { Inter } from 'next/font/google'
 import ApolloProvider from './components/providers/ApolloProvider'
+import { Viewport } from 'next'
 
 const inter = Inter({ subsets: ['latin'] })
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+}
 
 export const metadata = {
   title: {
@@ -29,11 +36,6 @@ export const metadata = {
     ],
   },
   manifest: '/site.webmanifest',
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 1,
-  },
   robots: {
     index: true,
     follow: true,
