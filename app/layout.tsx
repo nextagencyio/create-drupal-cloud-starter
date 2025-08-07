@@ -21,11 +21,11 @@ export const metadata = {
   },
   icons: {
     icon: [
-      { url: '/icon.tsx', sizes: '32x32', type: 'image/png' },
+      { url: '/icon', sizes: '32x32', type: 'image/png' },
       { url: '/favicon.ico', sizes: 'any' }
     ],
     apple: [
-      { url: '/apple-icon.tsx', sizes: '180x180', type: 'image/png' }
+      { url: '/apple-icon', sizes: '180x180', type: 'image/png' }
     ],
   },
   manifest: '/site.webmanifest',

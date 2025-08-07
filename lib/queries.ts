@@ -47,3 +47,46 @@ export const GET_ARTICLE_BY_PATH = gql`
     }
   }
 `
+
+export const GET_HOMEPAGE_DATA = gql`
+  query GetHomepageData {
+    # Get the dedicated homepage content
+    nodeHomepages(first: 1) {
+      nodes {
+        id
+        title
+        path
+        heroTitle
+        heroSubtitle
+        heroDescription {
+          processed
+        }
+        featuresTitle
+        featuresSubtitle {
+          processed
+        }
+        featuresItems {
+          ... on ParagraphFeatureItem {
+            id
+            featureTitle
+            featureDescription {
+              processed
+            }
+          }
+        }
+        ctaTitle
+        ctaDescription {
+          processed
+        }
+        ctaPrimary {
+          title
+          url
+        }
+        ctaSecondary {
+          title
+          url
+        }
+      }
+    }
+  }
+`

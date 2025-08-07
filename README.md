@@ -139,7 +139,10 @@ drupal-cloud-starter/
 ├── public/                        # Static assets
 │   └── site.webmanifest           # PWA manifest
 ├── .env.example                   # Environment variables template
-└── next.config.js                 # Next.js configuration
+├── next.config.js                 # Next.js configuration
+├── postcss.config.js              # PostCSS configuration
+├── tailwind.config.js             # Tailwind CSS configuration
+└── tsconfig.json                  # TypeScript configuration
 ```
 
 ## GraphQL Queries
