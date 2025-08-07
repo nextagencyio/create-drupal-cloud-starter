@@ -33,8 +33,13 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Revalidate the page
-    const path = slug === 'home' ? '/' : `/${slug}`
+    // Revalidate the page - map homepage and home to root
+    let path: string
+    if (slug === 'home' || slug === 'homepage') {
+      path = '/'
+    } else {
+      path = `/${slug}`
+    }
     revalidatePath(path)
 
     console.log(`Revalidated path: ${path}`)
