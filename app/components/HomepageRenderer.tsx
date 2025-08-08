@@ -1,3 +1,5 @@
+'use client'
+
 import Header from './Header'
 import HeroSection from './HeroSection'
 import FeaturesSection from './FeaturesSection'

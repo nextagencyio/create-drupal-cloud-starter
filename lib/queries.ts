@@ -18,6 +18,18 @@ export const GET_ARTICLE_TEASERS = gql`
             processed
             summary
           }
+          image {
+            url
+            alt
+            width
+            height
+            variations(styles: [LARGE, MEDIUM, THUMBNAIL]) {
+              name
+              url
+              width
+              height
+            }
+          }
         }
       }
     }
@@ -40,6 +52,18 @@ export const GET_ARTICLE_BY_PATH = gql`
             }
             changed {
               timestamp
+            }
+            image {
+              url
+              alt
+              width
+              height
+              variations(styles: [LARGE, MEDIUM, THUMBNAIL]) {
+                name
+                url
+                width
+                height
+              }
             }
           }
         }
@@ -114,6 +138,18 @@ export const GET_NODE_BY_PATH = gql`
             }
             changed {
               timestamp
+            }
+            image {
+              url
+              alt
+              width
+              height
+              variations(styles: [LARGE, MEDIUM, THUMBNAIL]) {
+                name
+                url
+                width
+                height
+              }
             }
           }
           ... on NodeHomepage {

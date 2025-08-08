@@ -1,6 +1,6 @@
 import Link from 'next/link'
-import Image from 'next/image'
 import { DrupalArticle } from '@/lib/types'
+import ResponsiveImage from './ResponsiveImage'
 
 interface ArticleTeaserProps {
   article: DrupalArticle
@@ -20,15 +20,13 @@ export default function ArticleTeaser({ article }: ArticleTeaserProps) {
   return (
     <article className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-200">
       {article.image?.url && (
-        <div className="relative h-48 w-full">
-          <Image
-            src={article.image.url}
+        <div className="h-48 w-full overflow-hidden">
+          <ResponsiveImage
+            image={article.image}
             alt={article.image.alt || article.title}
-            fill
-            className="object-cover"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className="transition-transform duration-300 hover:scale-105 h-full"
+            context="teaser"
             priority={false}
-            loading="lazy"
           />
         </div>
       )}

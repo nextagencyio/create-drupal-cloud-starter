@@ -25,6 +25,7 @@ async function getArticles(apolloClient: ReturnType<typeof getServerApolloClient
     return data
   } catch (error) {
     console.error('Error fetching articles:', error)
+    console.error('Error details:', JSON.stringify(error, Object.getOwnPropertyNames(error), 2))
     return null
   }
 }

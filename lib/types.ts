@@ -20,6 +20,12 @@ export interface DrupalArticle extends DrupalNode {
     alt?: string
     width?: number
     height?: number
+    variations?: Array<{
+      name: string
+      url: string
+      width: number
+      height: number
+    }>
   }
 }
 

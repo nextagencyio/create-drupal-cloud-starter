@@ -1,6 +1,7 @@
 import Header from '../components/Header'
 import ErrorBoundary from '../components/ErrorBoundary'
 import HomepageRenderer from '../components/HomepageRenderer'
+import ResponsiveImage from '../components/ResponsiveImage'
 import { headers } from 'next/headers'
 import { Metadata } from 'next'
 import { GET_NODE_BY_PATH } from '@/lib/queries'
@@ -37,7 +38,10 @@ export default async function GenericPage({ params }: { params: { slug: string[]
   const apollo = getServerApolloClient(headers())
 
   try {
-    const { data } = await apollo.query({ query: GET_NODE_BY_PATH, variables: { path }, fetchPolicy: 'no-cache' })
+    console.log('Querying for path:', path)
+    const result = await apollo.query({ query: GET_NODE_BY_PATH, variables: { path }, fetchPolicy: 'no-cache' })
+    console.log('GraphQL result:', JSON.stringify(result, null, 2))
+    const { data } = result
     const entity = data?.route?.entity
 
     if (!entity) {
@@ -59,6 +63,7 @@ export default async function GenericPage({ params }: { params: { slug: string[]
     // Handle regular page and article nodes
     const title = entity.title || 'Untitled'
     const bodyHtml = entity?.body?.processed || ''
+    const image = entity?.image
 
     return (
       <div className="min-h-screen bg-gray-50">
@@ -66,6 +71,16 @@ export default async function GenericPage({ params }: { params: { slug: string[]
         <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <ErrorBoundary>
             <article className="bg-white rounded-lg shadow-sm overflow-hidden">
+              {image && (
+                <ResponsiveImage
+                  image={image}
+                  alt={image.alt || title}
+                  context="hero"
+                  className="rounded-t-lg"
+                  maxHeight="60vh"
+                  priority={true}
+                />
+              )}
               <div className="p-8">
                 <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">{title}</h1>
                 <div className="prose prose-lg max-w-none" dangerouslySetInnerHTML={{ __html: bodyHtml }} />
