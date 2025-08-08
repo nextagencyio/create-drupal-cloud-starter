@@ -90,3 +90,34 @@ export const GET_HOMEPAGE_DATA = gql`
     }
   }
 `
+
+export const GET_NODE_BY_PATH = gql`
+  query GetNodeByPath($path: String!) {
+    route(path: $path) {
+      ... on RouteInternal {
+        entity {
+          ... on NodePage {
+            id
+            title
+            body {
+              processed
+            }
+          }
+          ... on NodeArticle {
+            id
+            title
+            body {
+              processed
+            }
+            created {
+              timestamp
+            }
+            changed {
+              timestamp
+            }
+          }
+        }
+      }
+    }
+  }
+`
