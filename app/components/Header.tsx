@@ -15,9 +15,10 @@ export default function Header() {
   const pathname = usePathname()
 
   const getActiveTab = () => {
+    if (pathname === '/') return 'Home'
     if (pathname === '/articles') return 'Articles'
     if (pathname === '/about') return 'About'
-    return 'Home'
+    return null
   }
 
   const activeTab = getActiveTab()

@@ -1,5 +1,6 @@
 import Header from '../components/Header'
 import ErrorBoundary from '../components/ErrorBoundary'
+import HomepageRenderer from '../components/HomepageRenderer'
 import { headers } from 'next/headers'
 import { Metadata } from 'next'
 import { GET_NODE_BY_PATH } from '@/lib/queries'
@@ -36,11 +37,7 @@ export default async function GenericPage({ params }: { params: { slug: string[]
   const apollo = getServerApolloClient(headers())
 
   try {
-    console.log('Querying for path:', path)
-    const result = await apollo.query({ query: GET_NODE_BY_PATH, variables: { path }, fetchPolicy: 'no-cache' })
-    console.log('GraphQL full result:', JSON.stringify(result, null, 2))
-    const { data } = result
-    console.log('GraphQL response:', JSON.stringify(data, null, 2))
+    const { data } = await apollo.query({ query: GET_NODE_BY_PATH, variables: { path }, fetchPolicy: 'no-cache' })
     const entity = data?.route?.entity
 
     if (!entity) {
@@ -54,6 +51,12 @@ export default async function GenericPage({ params }: { params: { slug: string[]
       )
     }
 
+    // Handle homepage nodes
+    if (entity.__typename === 'NodeHomepage') {
+      return <HomepageRenderer homepageContent={entity} />
+    }
+
+    // Handle regular page and article nodes
     const title = entity.title || 'Untitled'
     const bodyHtml = entity?.body?.processed || ''
 
@@ -74,7 +77,6 @@ export default async function GenericPage({ params }: { params: { slug: string[]
     )
   } catch (error) {
     console.error('Error loading page by path:', error)
-    console.error('Error details:', JSON.stringify(error, Object.getOwnPropertyNames(error), 2))
     return (
       <div className="min-h-screen bg-gray-50">
         <Header />

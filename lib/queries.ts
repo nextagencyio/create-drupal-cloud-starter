@@ -116,6 +116,40 @@ export const GET_NODE_BY_PATH = gql`
               timestamp
             }
           }
+          ... on NodeHomepage {
+            id
+            title
+            heroTitle
+            heroSubtitle
+            heroDescription {
+              processed
+            }
+            featuresTitle
+            featuresSubtitle {
+              processed
+            }
+            featuresItems {
+              ... on ParagraphFeatureItem {
+                id
+                featureTitle
+                featureDescription {
+                  processed
+                }
+              }
+            }
+            ctaTitle
+            ctaDescription {
+              processed
+            }
+            ctaPrimary {
+              title
+              url
+            }
+            ctaSecondary {
+              title
+              url
+            }
+          }
         }
       }
     }

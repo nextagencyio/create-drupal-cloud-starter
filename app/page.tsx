@@ -1,8 +1,4 @@
-import Header from './components/Header'
-import HeroSection from './components/HeroSection'
-import FeaturesSection from './components/FeaturesSection'
-import CTASection from './components/CTASection'
-import ErrorBoundary from './components/ErrorBoundary'
+import HomepageRenderer from './components/HomepageRenderer'
 import { Metadata } from 'next'
 import { headers } from 'next/headers'
 import { getServerApolloClient } from '../lib/apollo-client'
@@ -54,21 +50,5 @@ export default async function Home() {
   const data = await getHomepageData(apolloClient)
   const homepageContent = data?.nodeHomepages?.nodes?.[0]
 
-  return (
-    <div className="min-h-screen bg-gray-50">
-      <Header />
-
-      <ErrorBoundary>
-        <HeroSection homepageContent={homepageContent} />
-      </ErrorBoundary>
-
-      <ErrorBoundary>
-        <FeaturesSection homepageContent={homepageContent} />
-      </ErrorBoundary>
-
-      <ErrorBoundary>
-        <CTASection homepageContent={homepageContent} />
-      </ErrorBoundary>
-    </div>
-  )
+  return <HomepageRenderer homepageContent={homepageContent} />
 }
