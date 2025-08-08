@@ -44,13 +44,12 @@ export function getImageUrl(
     return proxyDrupalUrl(image.url)
   }
   
-  // Try to find the preferred size variation
+  // Try to find the preferred size variation, but always fallback to original
+  // since image style variations may not exist on the Drupal backend
   const preferredVariation = image.variations?.find(v => v.name === preferredSize)
-  if (preferredVariation) {
-    return proxyDrupalUrl(preferredVariation.url)
-  }
   
-  // Fallback to original image
+  // For now, always use the original image since style variations aren't working
+  // TODO: Fix Drupal image style generation or verify variations exist before using
   return proxyDrupalUrl(image.url)
 }
 
