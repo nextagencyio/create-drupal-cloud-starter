@@ -122,7 +122,7 @@ export default async function Articles() {
         ) : (
           <ErrorBoundary>
             {/* Articles Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
               {articles.map((article) => (
                 <ErrorBoundary key={article.id}>
                   <ArticleTeaser article={article} />
