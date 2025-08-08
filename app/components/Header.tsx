@@ -30,14 +30,14 @@ export default function Header() {
           {/* Left side - Logo and Navigation */}
           <div className="flex items-center space-x-8">
             {/* Logo */}
-            <div className="flex items-center space-x-3">
+            <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity duration-200">
               <div className="flex-shrink-0">
                 <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
                   <Cloud className="w-4 h-4 text-white" />
                 </div>
               </div>
               <span className="text-lg font-semibold text-gray-900">Drupal Cloud</span>
-            </div>
+            </Link>
 
             {/* Navigation Menu */}
             <nav className="hidden md:flex space-x-6">
