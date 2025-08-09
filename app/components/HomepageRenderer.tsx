@@ -5,39 +5,9 @@ import HeroSection from './HeroSection'
 import FeaturesSection from './FeaturesSection'
 import CTASection from './CTASection'
 import ErrorBoundary from './ErrorBoundary'
+import { DrupalHomepage } from '@/lib/types'
 
-interface HomepageContent {
-  id: string
-  title: string
-  heroTitle: string
-  heroSubtitle: string
-  heroDescription: {
-    processed: string
-  }
-  featuresTitle: string
-  featuresSubtitle: {
-    processed: string
-  }
-  featuresItems: Array<{
-    id: string
-    featureTitle: string
-    featureDescription: {
-      processed: string
-    }
-  }>
-  ctaTitle: string
-  ctaDescription: {
-    processed: string
-  }
-  ctaPrimary: {
-    title: string
-    url: string
-  }
-  ctaSecondary: {
-    title: string
-    url: string
-  }
-}
+interface HomepageContent extends DrupalHomepage {}
 
 interface HomepageRendererProps {
   homepageContent: HomepageContent | null | undefined
