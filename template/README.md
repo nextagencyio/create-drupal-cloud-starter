@@ -2,7 +2,7 @@
 
 A Next.js application integrated with Drupal Cloud, built with modern web technologies.
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/nextagencyio/drupal-cloud-starter&project-name=my-drupal-app&repository-name=my-drupal-app&root-directory=template&env=NEXT_PUBLIC_DRUPAL_BASE_URL,DRUPAL_CLIENT_ID,DRUPAL_CLIENT_SECRET,DRUPAL_REVALIDATE_SECRET&envDescription=Configure%20your%20Drupal%20Cloud%20connection&envLink=https://github.com/nextagencyio/drupal-cloud-starter%23environment-setup)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/nextagencyio/drupal-cloud-starter&project-name=my-drupal-app&repository-name=my-drupal-app&env=NEXT_PUBLIC_DRUPAL_BASE_URL,DRUPAL_CLIENT_ID,DRUPAL_CLIENT_SECRET,DRUPAL_REVALIDATE_SECRET&envDescription=Configure%20your%20Drupal%20Cloud%20connection&envLink=https://github.com/nextagencyio/drupal-cloud-starter%23environment-setup)
 
 > **Note**: After deployment, you'll see a friendly setup guide that walks you through configuring your Drupal Cloud connection. No more confusing error messages!
 
