@@ -7,7 +7,7 @@ The easiest way to get started with a Next.js application integrated with Drupal
 Create a new Drupal Cloud app in one command:
 
 ```bash
-npm create drupal-cloud-app my-app
+npm create drupal-cloud-starter my-app
 ```
 
 Or with npx:
