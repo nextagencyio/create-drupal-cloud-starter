@@ -1,42 +1,54 @@
-# Drupal Cloud App
+# Create Drupal Cloud App
 
-A Next.js application integrated with Drupal Cloud, built with modern web technologies.
+The easiest way to get started with a Next.js application integrated with Drupal Cloud.
 
-## Features
+## Quick Start
 
-- ⚡ Next.js 15 with App Router
-- 🍃 Drupal integration ready
-- 🎨 Tailwind CSS for styling
-- 📱 Responsive design
-- 🔧 TypeScript support
-- 🧹 ESLint configuration
-
-## Getting Started
-
-First, install the dependencies:
+Create a new Drupal Cloud app in one command:
 
 ```bash
-npm install
+npm create drupal-cloud-app my-app
 ```
 
-Then, run the development server:
+Or with npx:
 
 ```bash
+npx create-drupal-cloud-app my-app
+```
+
+Then navigate to your project and start developing:
+
+```bash
+cd my-app
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to see your app running.
+
+## What's Included
+
+Your new app comes with:
+
+- ⚡ **Next.js 15** with App Router
+- 🍃 **Drupal integration** ready to go
+- 🎨 **Tailwind CSS** for styling
+- 📱 **Responsive design** out of the box
+- 🔧 **TypeScript** support
+- 🧹 **ESLint** configuration
+- 🚀 **Apollo Client** for GraphQL
 
 ## Available Scripts
 
+Once your app is created, you can run:
+
 - `npm run dev` - Start the development server
-- `npm run build` - Build the application for production
+- `npm run build` - Build for production
 - `npm run start` - Start the production server
 - `npm run lint` - Run ESLint
 
 ## Environment Setup
 
-Copy the example environment file and configure your variables:
+Your new project includes an `.env.example` file. Copy it to `.env.local` and configure your Drupal Cloud settings:
 
 ```bash
 cp .env.example .env.local
@@ -44,12 +56,12 @@ cp .env.example .env.local
 
 ## Requirements
 
-- Node.js 14.0.0 or later
+- Node.js 18.0.0 or later
 - npm, yarn, or pnpm
 
-## About
+## Contributing
 
-Created by [Next Agency](https://github.com/nextagencyio) for rapid Drupal headless development.
+Found a bug or want to contribute? Check out the [GitHub repository](https://github.com/your-username/create-drupal-cloud-app).
 
 ## License
 
