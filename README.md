@@ -13,7 +13,7 @@ npm create drupal-cloud-starter my-app
 Or with npx:
 
 ```bash
-npx create-drupal-cloud-starer my-app
+npx create-drupal-cloud-starter my-app
 ```
 
 Then navigate to your project and start developing:
@@ -61,7 +61,7 @@ cp .env.example .env.local
 
 ## Contributing
 
-Found a bug or want to contribute? Check out the [GitHub repository](https://github.com/your-username/create-drupal-cloud-starer).
+Found a bug or want to contribute? Check out the [GitHub repository](https://github.com/your-username/create-drupal-cloud-starter).
 
 ## License
 
