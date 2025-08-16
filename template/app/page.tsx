@@ -1,9 +1,11 @@
 import HomepageRenderer from './components/HomepageRenderer'
+import SetupGuide from './components/SetupGuide'
 import { Metadata } from 'next'
 import { headers } from 'next/headers'
 import { getServerApolloClient } from '../lib/apollo-client'
 import { GET_HOMEPAGE_DATA } from '../lib/queries'
 import { HomepageData } from '../lib/types'
+import { checkConfiguration } from '../lib/config-check'
 
 // Enable ISR with 1 hour revalidation
 export const revalidate = 3600
@@ -45,6 +47,13 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Home() {
+  // Check if the app is properly configured
+  const configStatus = checkConfiguration()
+  
+  if (!configStatus.isConfigured) {
+    return <SetupGuide missingVars={configStatus.missingVars} />
+  }
+
   const requestHeaders = await headers()
   const apolloClient = getServerApolloClient(requestHeaders)
   const data = await getHomepageData(apolloClient)

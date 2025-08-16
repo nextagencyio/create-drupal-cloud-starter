@@ -63,6 +63,25 @@ async function getAccessToken(): Promise<string | null> {
 }
 
 export async function POST(request: NextRequest) {
+  // Check if required environment variables are configured
+  if (!process.env.NEXT_PUBLIC_DRUPAL_BASE_URL || 
+      !process.env.DRUPAL_CLIENT_ID || 
+      !process.env.DRUPAL_CLIENT_SECRET) {
+    return NextResponse.json({
+      errors: [{
+        message: 'Drupal Cloud is not configured yet. Please set up your environment variables.',
+        extensions: {
+          code: 'CONFIGURATION_REQUIRED',
+          missingVars: [
+            !process.env.NEXT_PUBLIC_DRUPAL_BASE_URL && 'NEXT_PUBLIC_DRUPAL_BASE_URL',
+            !process.env.DRUPAL_CLIENT_ID && 'DRUPAL_CLIENT_ID',
+            !process.env.DRUPAL_CLIENT_SECRET && 'DRUPAL_CLIENT_SECRET'
+          ].filter(Boolean)
+        }
+      }]
+    }, { status: 200 }) // Return 200 so GraphQL client handles it properly
+  }
+
   try {
     const body = await request.text()
     
