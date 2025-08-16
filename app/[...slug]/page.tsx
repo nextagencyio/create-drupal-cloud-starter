@@ -9,10 +9,11 @@ import { getServerApolloClient } from '@/lib/apollo-client'
 
 export const revalidate = 300
 
-export async function generateMetadata({ params }: { params: { slug: string[] } }): Promise<Metadata> {
-  const path = `/${(params.slug || []).join('/')}`
+export async function generateMetadata({ params }: { params: Promise<{ slug: string[] }> }): Promise<Metadata> {
+  const resolvedParams = await params
+  const path = `/${(resolvedParams.slug || []).join('/')}`
   try {
-    const apollo = getServerApolloClient(headers())
+    const apollo = getServerApolloClient(await headers())
     const { data } = await apollo.query({ query: GET_NODE_BY_PATH, variables: { path } })
     const title = data?.route?.entity?.title || 'Page'
     return { title }
@@ -33,9 +34,10 @@ function PageNotFound({ path }: { path: string }) {
   )
 }
 
-export default async function GenericPage({ params }: { params: { slug: string[] } }) {
-  const path = `/${(params.slug || []).join('/')}`
-  const apollo = getServerApolloClient(headers())
+export default async function GenericPage({ params }: { params: Promise<{ slug: string[] }> }) {
+  const resolvedParams = await params
+  const path = `/${(resolvedParams.slug || []).join('/')}`
+  const apollo = getServerApolloClient(await headers())
 
   try {
     console.log('Querying for path:', path)

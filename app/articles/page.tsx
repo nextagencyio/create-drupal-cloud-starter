@@ -54,7 +54,7 @@ function ErrorState({ error }: { error: string }) {
 }
 
 export default async function Articles() {
-  const requestHeaders = headers()
+  const requestHeaders = await headers()
   const apolloClient = getServerApolloClient(requestHeaders)
   const data = await getArticles(apolloClient)
 

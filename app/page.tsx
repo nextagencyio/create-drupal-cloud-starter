@@ -45,7 +45,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Home() {
-  const requestHeaders = headers()
+  const requestHeaders = await headers()
   const apolloClient = getServerApolloClient(requestHeaders)
   const data = await getHomepageData(apolloClient)
   const homepageContent = data?.nodeHomepages?.nodes?.[0]

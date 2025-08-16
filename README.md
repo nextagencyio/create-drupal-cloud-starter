@@ -1,51 +1,51 @@
-# create-drupal-cloud-app
+# Drupal Cloud App
 
-Create Drupal Cloud Next.js applications with a single command.
+A Next.js application integrated with Drupal Cloud, built with modern web technologies.
 
-## Usage
+## Features
 
-```bash
-npm create drupal-cloud-app my-app
-```
-
-Or with other package managers:
-
-```bash
-# Using yarn
-yarn create drupal-cloud-app my-app
-
-# Using pnpm  
-pnpm create drupal-cloud-app my-app
-
-# Using npx directly
-npx create-drupal-cloud-app my-app
-```
-
-## What it does
-
-This package creates a new Next.js application using the [Drupal Cloud Starter](https://github.com/nextagencyio/drupal-cloud-starter) template, which includes:
-
-- ⚡ Next.js with TypeScript
+- ⚡ Next.js 15 with App Router
 - 🍃 Drupal integration ready
-- 🎨 Pre-configured styling
+- 🎨 Tailwind CSS for styling
 - 📱 Responsive design
-- 🔧 Development tools and linting
+- 🔧 TypeScript support
+- 🧹 ESLint configuration
+
+## Getting Started
+
+First, install the dependencies:
+
+```bash
+npm install
+```
+
+Then, run the development server:
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## Available Scripts
+
+- `npm run dev` - Start the development server
+- `npm run build` - Build the application for production
+- `npm run start` - Start the production server
+- `npm run lint` - Run ESLint
+
+## Environment Setup
+
+Copy the example environment file and configure your variables:
+
+```bash
+cp .env.example .env.local
+```
 
 ## Requirements
 
 - Node.js 14.0.0 or later
 - npm, yarn, or pnpm
-
-## After creation
-
-Once your app is created, navigate to the directory and start developing:
-
-```bash
-cd my-app
-npm run dev
-```
-
-Your app will be available at `http://localhost:3000`.
 
 ## About
 

@@ -8,9 +8,10 @@ const httpsAgent = new https.Agent({
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { path: string[] } }
+  { params }: { params: Promise<{ path: string[] }> }
 ) {
-  const path = params.path.join('/')
+  const resolvedParams = await params
+  const path = resolvedParams.path.join('/')
   const drupalBaseUrl = process.env.NEXT_PUBLIC_DRUPAL_BASE_URL
   
   if (!drupalBaseUrl) {

@@ -1,41 +1,33 @@
 {
-  "name": "create-drupal-cloud-app",
-  "version": "1.0.1",
-  "description": "Create Drupal Cloud Next.js applications with a single command",
-  "main": "index.js",
-  "bin": {
-    "create-drupal-cloud-app": "./index.js"
-  },
+  "name": "drupal-cloud-starter",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [
-    "nextjs",
-    "drupal",
-    "create-app",
-    "starter",
-    "template",
-    "headless",
-    "cms"
-  ],
-  "author": "Next Agency",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/nextagencyio/create-drupal-cloud-app.git"
-  },
-  "bugs": {
-    "url": "https://github.com/nextagencyio/create-drupal-cloud-app/issues"
-  },
-  "homepage": "https://github.com/nextagencyio/create-drupal-cloud-app#readme",
-  "files": [
-    "index.js",
-    "README.md"
-  ],
-  "engines": {
-    "node": ">=14.0.0"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
-    "chalk": "^4.1.2"
+    "@apollo/client": "^3.13.9",
+    "@tailwindcss/typography": "^0.5.16",
+    "clsx": "^2.1.1",
+    "dotenv": "^17.2.1",
+    "lucide-react": "^0.539.0",
+    "next": "^15.4.6",
+    "node-fetch": "^3.3.2",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22",
+    "@types/react": "^19.1.10",
+    "@types/react-dom": "^19.1.7",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^9",
+    "eslint-config-next": "^15.0.0",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5"
   }
 }

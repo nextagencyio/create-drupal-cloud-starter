@@ -37,6 +37,9 @@ async function getAccessToken(): Promise<string | null> {
     })
 
     if (!response.ok) {
+      console.error('OAuth token request failed:', response.status, response.statusText)
+      const errorText = await response.text()
+      console.error('OAuth error response:', errorText)
       return null
     }
 
@@ -74,6 +77,9 @@ export async function POST(request: NextRequest) {
     // Add auth token if available
     if (accessToken) {
       headers['Authorization'] = accessToken
+      console.log('Using access token for GraphQL request')
+    } else {
+      console.log('No access token available for GraphQL request')
     }
     
     const graphqlUrl = `${process.env.NEXT_PUBLIC_DRUPAL_BASE_URL}/graphql`
@@ -83,6 +89,12 @@ export async function POST(request: NextRequest) {
       headers,
       body,
     })
+
+    if (!response.ok) {
+      console.error('GraphQL request failed:', response.status, response.statusText)
+      const errorText = await response.text()
+      console.error('GraphQL error response:', errorText)
+    }
 
     const data = await response.text()
     
