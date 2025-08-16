@@ -1,6 +1,6 @@
 {
   "name": "create-drupal-cloud-starter",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Create a new Drupal Cloud app with Next.js",
   "keywords": [
     "nextjs",
