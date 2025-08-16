@@ -4,12 +4,6 @@ The easiest way to get started with a Next.js application integrated with Drupal
 
 ## Quick Start
 
-### Option 1: Deploy to Vercel (Recommended)
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/nextagencyio/drupal-cloud-starter&project-name=my-drupal-app&repository-name=my-drupal-app&env=NEXT_PUBLIC_DRUPAL_BASE_URL,DRUPAL_CLIENT_ID,DRUPAL_CLIENT_SECRET,DRUPAL_REVALIDATE_SECRET&envDescription=Configure%20your%20Drupal%20Cloud%20connection&envLink=https://github.com/nextagencyio/drupal-cloud-starter%23environment-setup)
-
-### Option 2: Create locally
-
 Create a new Drupal Cloud app in one command:
 
 ```bash
@@ -42,6 +36,7 @@ Your new app comes with:
 - 🔧 **TypeScript** support
 - 🧹 **ESLint** configuration
 - 🚀 **Apollo Client** for GraphQL
+- 🎯 **Friendly setup guide** for easy configuration
 
 ## Available Scripts
 
@@ -67,7 +62,7 @@ cp .env.example .env.local
 
 ## Contributing
 
-Found a bug or want to contribute? Check out the [GitHub repository](https://github.com/your-username/create-drupal-cloud-starter).
+Found a bug or want to contribute? Check out the [GitHub repository](https://github.com/nextagencyio/create-drupal-cloud-starter).
 
 ## License
 

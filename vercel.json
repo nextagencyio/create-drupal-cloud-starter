@@ -1,6 +1,0 @@
-{
-  "buildCommand": "cd template && npm ci && npm run build",
-  "outputDirectory": "template/.next",
-  "installCommand": "cd template && npm ci",
-  "framework": "nextjs"
-}
