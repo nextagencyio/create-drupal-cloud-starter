@@ -8,8 +8,8 @@ const projectName = process.argv[2];
 
 if (!projectName) {
   console.error('Please specify a project name:');
-  console.log('  npm create drupal-cloud-app my-app');
-  console.log('  npx create-drupal-cloud-app my-app');
+  console.log('  npm create drupal-cloud-starer my-app');
+  console.log('  npx create-drupal-cloud-starer my-app');
   process.exit(1);
 }
 

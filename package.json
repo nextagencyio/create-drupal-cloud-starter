@@ -1,6 +1,6 @@
 {
   "name": "create-drupal-cloud-starter",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Create a new Drupal Cloud app with Next.js",
   "keywords": [
     "nextjs",
@@ -12,7 +12,7 @@
   "author": "Jay Callicott",
   "license": "MIT",
   "bin": {
-    "create-drupal-cloud-app": "./bin/index.js"
+    "create-drupal-cloud-starer": "./bin/index.js"
   },
   "files": [
     "bin",
