@@ -14,7 +14,7 @@ export function checkConfiguration(): ConfigStatus {
 
   const missingVars = requiredVars.filter(varName => {
     const value = process.env[varName]
-    return !value || value.includes('your-') || value.includes('ddev.site')
+    return !value || value.includes('your-') || value === 'your-site.ddev.site'
   })
 
   return {
