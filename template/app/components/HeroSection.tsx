@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import { ArrowRight } from 'lucide-react'
 import { DrupalHomepage } from '@/lib/types'
 
 interface HeroSectionProps {
@@ -35,7 +34,7 @@ export default function HeroSection({ homepageContent }: HeroSectionProps) {
               className="inline-flex items-center px-8 py-3 bg-white text-blue-600 rounded-lg hover:bg-gray-100 transition-colors duration-200 font-semibold"
             >
               View Articles
-              <ArrowRight className="ml-2 w-5 h-5" />
+              →
             </Link>
             <Link
               href="/about"
