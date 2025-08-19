@@ -32,6 +32,7 @@ When asked to implement a new content type (e.g., “create a product page”), 
 - Base on `schema/sample.json`
 - Include model definition and sample content
 - Important: In `values`, use field ID directly, never with `field_` prefix
+- For image fields: Use full URLs with Drupal domain from `.env.local`, not relative paths
 
 Template:
 ```json
@@ -55,7 +56,12 @@ Template:
       "values": {
         "title": "Item Title",
         "body": "<p>Body content</p>",
-        "field_name": "field_value"
+        "field_name": "field_value",
+        "image_field": {
+          "uri": "${DRUPAL_BASE_URL}/modules/custom/dcloud_import/resources/article.png",
+          "alt": "Image description",
+          "title": "Image title"
+        }
       }
     }
   ]
@@ -133,9 +139,12 @@ Checklist:
 
 # Common Patterns
 - Product: `price (string)`, `product_images (image[])`, `in_stock (bool)`, `features (string[])`
+  - Image URI: `{"uri": "${DRUPAL_BASE_URL}/modules/custom/dcloud_import/resources/article.png", "alt": "Product image", "title": "Product"}`
 - Event: `event_date (datetime)`, `location (string)`, `speakers (string[])`
 - Team: `position (string)`, `profile_image (image)`, `bio (text)`
+  - Image URI: `{"uri": "${DRUPAL_BASE_URL}/modules/custom/dcloud_import/resources/article.png", "alt": "Team member photo", "title": "Profile"}`
 - Case Study: `project_url (string)`, `technologies (string[])`, `project_images (image[])`
+  - Image URI: `{"uri": "${DRUPAL_BASE_URL}/modules/custom/dcloud_import/resources/article.png", "alt": "Project screenshot", "title": "Interface"}`
 
 # Troubleshooting
 - DCloud import fails: check OAuth, JSON structure, no `field_` in values

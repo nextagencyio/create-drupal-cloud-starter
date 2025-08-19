@@ -102,6 +102,15 @@ When asked to create a new content type (e.g., "create a product page"), follow 
 - Use `"body": true` to include standard body field
 - Always include sample content for testing
 - Path aliases should follow `/content-type/slug` pattern
+- **For image fields**: Use full URLs with the Drupal domain from `.env.local`, not relative paths:
+  ```json
+  "featured_image": {
+    "uri": "${DRUPAL_BASE_URL}/modules/custom/dcloud_import/resources/article.png",
+    "alt": "Description of the image", 
+    "title": "Image title"
+  }
+  ```
+  Always read the `NEXT_PUBLIC_DRUPAL_BASE_URL` from `.env.local` and use that as the base for image URIs to ensure images load correctly from the Drupal backend.
 
 ### 3. Import via DCloud API
 
@@ -455,6 +464,17 @@ curl -s "http://localhost:3001/[content-type]" | grep -o "<title>[^<]*" | head -
 }
 ```
 
+**Sample content with image URI:**
+```json
+"product_images": [
+  {
+    "uri": "${DRUPAL_BASE_URL}/modules/custom/dcloud_import/resources/article.png",
+    "alt": "Product showcase image",
+    "title": "Product Image"
+  }
+]
+```
+
 ### Event/Conference
 ```json
 {
@@ -493,6 +513,15 @@ curl -s "http://localhost:3001/[content-type]" | grep -o "<title>[^<]*" | head -
 }
 ```
 
+**Sample content with image URI:**
+```json
+"profile_image": {
+  "uri": "${DRUPAL_BASE_URL}/modules/custom/dcloud_import/resources/article.png",
+  "alt": "Team member headshot",
+  "title": "Profile Photo"
+}
+```
+
 ### Portfolio/Case Study
 ```json
 {
@@ -510,6 +539,17 @@ curl -s "http://localhost:3001/[content-type]" | grep -o "<title>[^<]*" | head -
   "label": "Project Images",
   "type": "image[]"
 }
+```
+
+**Sample content with image URIs:**
+```json
+"project_images": [
+  {
+    "uri": "${DRUPAL_BASE_URL}/modules/custom/dcloud_import/resources/article.png",
+    "alt": "Project screenshot showing main interface",
+    "title": "Project Interface"
+  }
+]
 ```
 
 ## Troubleshooting
