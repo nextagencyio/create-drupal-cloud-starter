@@ -131,11 +131,12 @@ Checklist:
 # Field Types Reference
 - `text` – Rich HTML field
 - `string` – Short text (≤255 chars)
-- `image` – Media image
+- `image` – Single image upload
+- `image[]` – Multiple image uploads
 - `datetime` – Date/time
 - `bool` – Boolean
 - `text[]` – Rich HTML list
-- `string[]` – Plain text list
+- `string[]` – Plain text list (recommended for features/specs)
 
 # Common Patterns
 - Product: `price (string)`, `product_images (image[])`, `in_stock (bool)`, `features (string[])`
@@ -152,6 +153,7 @@ Checklist:
 - GraphQL errors: confirm content type exists, clear GraphQL cache, regenerate schema
 - Build errors: verify types, imports, query syntax
 - Content not showing: confirm field names match GraphQL schema; for HTML use `dangerouslySetInnerHTML={{ __html: field.processed }}`
+- **Field name mismatches**: DCloud field IDs may transform (e.g., `in_stock` → `inStock` in GraphQL)
 
 Debug snippets:
 ```bash
@@ -174,10 +176,12 @@ curl -k -X POST "${DRUPAL_BASE_URL}/graphql" \
 1. **ALWAYS run `npm run generate-schema` immediately after DCloud imports**
 2. Create sample content for immediate testing
 3. Prefer `string[]` for simple lists; use `text[]` only when necessary
-4. Verify GraphQL field names against the actual schema
+4. Verify GraphQL field names against the actual schema (may differ from DCloud field IDs)
 5. Handle empty/missing data gracefully
 6. Keep TypeScript types accurate and complete
 7. Use semantic HTML and ensure responsive design
+8. **Navigation integration**: Update `navigationItems` array and use `.startsWith()` for active detection
+9. **Component architecture**: Create Card + Renderer components per content type
 
 # Success Criteria
 - Builds without errors; routes render correctly; navigation works; responsive; proper fallbacks; follows design patterns; integrates with existing auth and routing.

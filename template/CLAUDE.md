@@ -869,6 +869,100 @@ npm run generate-schema
 
 This learning transforms the development workflow from "sometimes works" to "reliably works every time."
 
+### GraphQL Schema Field Name Discovery
+
+**Critical Process**: Always verify actual GraphQL field names after DCloud import - they may differ from field IDs used in import JSON.
+
+**Discovery Method**:
+```bash
+# Test simple GraphQL query to understand actual field structure
+curl -k -X POST "${DRUPAL_BASE_URL}/graphql" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer [TOKEN]" \
+  -d '{"query":"{ nodeProducts(first: 1) { nodes { id title price sku inStock features } } }"}'
+```
+
+**Key Learning**: DCloud field IDs may transform in GraphQL schema:
+- `in_stock` becomes `inStock` (camelCase)
+- `product_images` becomes `productImages` (camelCase) 
+- Simple field types work reliably (string, boolean, string[])
+
+### Component Architecture Patterns
+
+**Proven Two-Component Pattern**:
+1. **`[ContentType]Card.tsx`** - Listing view component
+   - Preview information only
+   - Truncated content (features.slice(0, 3))
+   - Call-to-action buttons
+   - Stock/status indicators
+
+2. **`[ContentType]Renderer.tsx`** - Detail page component
+   - Complete data display
+   - Full feature/specification lists
+   - Image galleries
+   - Action buttons and forms
+
+**Navigation Integration Pattern**:
+```typescript
+// Always update navigationItems array
+const navigationItems = [
+  { name: 'Home', href: '/' },
+  { name: 'Products', href: '/products' },  // Add new content type
+  // ...
+]
+
+// Use .startsWith() for active state detection
+const getActiveTab = () => {
+  if (pathname === '/products' || pathname.startsWith('/products/')) return 'Products'
+  // ...
+}
+```
+
+### Field Type Best Practices (Revised)
+
+Based on successful product catalog implementation:
+
+**Reliable Field Types**:
+- `string` - Simple text values (price, SKU, category)
+- `string[]` - Multiple simple values (features, specifications)
+- `bool` - Boolean flags (in_stock, featured)
+- `text` - Rich HTML content (body, descriptions)
+- `image[]` - Multiple image uploads
+- `image` - Single image upload
+
+**Recommendation**: Use `string[]` for lists (features, specifications) instead of `text[]` to avoid HTML rendering complexity.
+
+### Build Process Integration
+
+**Essential Commands Sequence**:
+```bash
+# After DCloud import, always run:
+npm run generate-schema  # Updates GraphQL schema
+npm run build           # Validates TypeScript and builds
+npm run dev            # Test in development
+```
+
+**Success Criteria**:
+- ✅ Build completes without TypeScript errors
+- ✅ Listing page loads with HTTP 200
+- ✅ Detail pages load with proper titles
+- ✅ Navigation highlighting works correctly
+
+### Deployment Field Mapping Reference
+
+**DCloud Import → GraphQL Schema Mapping**:
+```json
+// DCloud import format:
+{
+  "in_stock": true,           // → GraphQL: inStock
+  "product_images": [...],    // → GraphQL: productImages  
+  "features": ["A", "B"],     // → GraphQL: features
+  "specifications": ["X"]     // → GraphQL: specifications
+}
+```
+
+**Always verify field names in generated schema before writing TypeScript types.**
+
 ## Summary
 
-This comprehensive guide enables "one-shot" prompts like "create a product catalog" to result in complete, working implementations from backend to frontend.
+This comprehensive guide enables "one-shot" prompts like "create a product catalog" to result in complete, working implementations from backend to frontend, with known limitations documented for efficient troubleshooting.

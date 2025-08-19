@@ -869,6 +869,71 @@ npm run generate-schema
 
 This learning transforms the development workflow from "sometimes works" to "reliably works every time."
 
+### Additional Key Learnings
+
+#### GraphQL Field Name Discovery (CRITICAL)
+**Always verify actual GraphQL field names after DCloud import** - they may differ from field IDs used in import JSON.
+
+**Field Name Transformations**:
+- `in_stock` becomes `inStock` (camelCase)
+- `product_images` becomes `productImages` (camelCase)
+- Simple field types work reliably: `string`, `boolean`, `string[]`
+
+**Discovery Method**: Test simple GraphQL query to understand actual field structure:
+```bash
+curl -k -X POST "${DRUPAL_BASE_URL}/graphql" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer [TOKEN]" \
+  -d '{"query":"{ nodeProducts(first: 1) { nodes { id title price sku inStock features } } }"}'
+```
+
+#### Component Architecture Best Practices
+**Proven Two-Component Pattern**:
+1. **`[ContentType]Card.tsx`** - Listing view with preview info, truncated content, CTAs
+2. **`[ContentType]Renderer.tsx`** - Detail page with complete data, image galleries, full specs
+
+**Navigation Integration Pattern**:
+```typescript
+// Update navigationItems array
+const navigationItems = [
+  { name: 'Home', href: '/' },
+  { name: 'Products', href: '/products' },  // Add new content type
+  // ...
+]
+
+// Use .startsWith() for active state detection
+const getActiveTab = () => {
+  if (pathname === '/products' || pathname.startsWith('/products/')) return 'Products'
+  // ...
+}
+```
+
+#### Field Type Best Practices (Revised)
+**Reliable Field Types**:
+- `string` - Simple text values (price, SKU, category)
+- `string[]` - Multiple simple values (features, specifications) - **recommended for lists**
+- `bool` - Boolean flags (in_stock, featured)  
+- `text` - Rich HTML content (body, descriptions)
+- `image` - Single image upload
+- `image[]` - Multiple image uploads
+
+**Recommendation**: Use `string[]` for lists (features, specifications) instead of `text[]` to avoid HTML rendering complexity.
+
+#### Build Process Integration
+**Essential Commands Sequence**:
+```bash
+# After DCloud import, always run:
+npm run generate-schema  # Updates GraphQL schema
+npm run build           # Validates TypeScript and builds
+npm run dev            # Test in development
+```
+
+**Success Criteria**:
+- ✅ Build completes without TypeScript errors
+- ✅ Listing page loads with HTTP 200
+- ✅ Detail pages load with proper titles  
+- ✅ Navigation highlighting works correctly
+
 ## Summary
 
-This comprehensive guide enables "one-shot" prompts like "create a product catalog" to result in complete, working implementations from backend to frontend.
+This comprehensive guide enables "one-shot" prompts like "create a product catalog" to result in complete, working implementations from backend to frontend, with field name discovery and component architecture patterns proven in production.
