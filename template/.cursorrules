@@ -1,0 +1,174 @@
+You are the Cursor AI working in a Next.js + Drupal monorepo. Follow these rules to deliver complete, working features end-to-end.
+
+# Project Overview
+- Architecture: Headless Drupal backend with Next.js frontend
+- Backend: Drupal 11 with GraphQL Compose and DCloud Import API
+- Frontend: Next.js 15 with TypeScript, Tailwind CSS, Apollo GraphQL
+- Environment: DDEV local development
+
+# Environment Configuration
+- Always read values from `.env.local` before making requests:
+  - `NEXT_PUBLIC_DRUPAL_BASE_URL` – Drupal base URL
+  - `DRUPAL_CLIENT_ID` / `DRUPAL_CLIENT_SECRET` – OAuth credentials
+  - `DRUPAL_REVALIDATE_SECRET` – On-demand revalidation secret
+  - `NODE_TLS_REJECT_UNAUTHORIZED=0` – Allow self-signed certs (dev)
+
+Shell snippet to load env values:
+```bash
+DRUPAL_BASE_URL=$(grep NEXT_PUBLIC_DRUPAL_BASE_URL .env.local | cut -d '=' -f2)
+CLIENT_ID=$(grep DRUPAL_CLIENT_ID .env.local | cut -d '=' -f2)
+CLIENT_SECRET=$(grep DRUPAL_CLIENT_SECRET .env.local | cut -d '=' -f2)
+```
+
+# End-to-End Workflow
+When asked to implement a new content type (e.g., “create a product page”), complete all steps:
+
+1) Plan content type
+- Define name + machine name
+- List fields and types
+- Determine components, routes, display needs
+
+2) Create DCloud Import JSON
+- Base on `schema/sample.json`
+- Include model definition and sample content
+- Important: In `values`, use field ID directly, never with `field_` prefix
+
+Template:
+```json
+{
+  "model": [
+    {
+      "bundle": "content_type_name",
+      "description": "Description",
+      "label": "Content Type Label",
+      "body": true,
+      "fields": [
+        { "id": "field_name", "label": "Field Label", "type": "text|string|image|datetime|bool|text[]" }
+      ]
+    }
+  ],
+  "content": [
+    {
+      "id": "item1",
+      "type": "node.content_type_name",
+      "path": "/content-type/item-slug",
+      "values": {
+        "title": "Item Title",
+        "body": "<p>Body content</p>",
+        "field_name": "field_value"
+      }
+    }
+  ]
+}
+```
+
+3) Import via DCloud API
+- Get OAuth token:
+```bash
+curl -k -X POST "${DRUPAL_BASE_URL}/oauth/token" \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "grant_type=client_credentials&client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}"
+```
+- Import JSON:
+```bash
+curl -k -X POST "${DRUPAL_BASE_URL}/api/dcloud-import" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer [ACCESS_TOKEN]" \
+  -d @content-type-import.json
+```
+- **CRITICAL**: Immediately run schema generation:
+```bash
+npm run generate-schema
+```
+- Verify: machine names, created nodes, and GraphQL schema updates
+
+4) Implement frontend
+- Files:
+```
+app/
+  components/
+    [ContentType]Card.tsx
+    [ContentType]Renderer.tsx
+    DynamicIcon.tsx (optional)
+  [content-type]/page.tsx
+  [...slug]/page.tsx (update)
+lib/
+  queries.ts (update)
+  types.ts (update)
+```
+ - GraphQL: add list query and update `GET_NODE_BY_PATH` cases
+ - Types: add `Drupal[ContentType]` and `[...]Data` interfaces
+ - Components: card + renderer; use `dangerouslySetInnerHTML` for processed HTML
+ - Routing: handle in dynamic route switch by `__typename`
+ - Navigation: add link in `app/components/Header.tsx`; update `navigationItems` and active detection with `pathname.startsWith('/route/')`
+ - DCloud GraphQL fields return simple types (`string`, `string[]`, `bool`, etc.), not `{ processed }` objects — probe schema with a quick query before typing components
+
+5) Build and test
+- `npm run build` → fix TypeScript/build errors
+- `npm run dev` → verify listing and detail views
+- Check URLs: `/[content-type]`, `/[content-type]/[slug]`
+
+Checklist:
+- [ ] DCloud import succeeds
+- [ ] **Schema generation runs (`npm run generate-schema`)**
+- [ ] GraphQL schema exposes fields
+- [ ] Types compile
+- [ ] Build passes
+- [ ] Listing and detail pages render
+- [ ] Navigation works, responsive design verified
+
+# Component Architecture
+- Per type, create `[ContentType]Card.tsx` (listing) and `[ContentType]Renderer.tsx` (detail)
+- Cards: preview data + CTA; Renderers: full display, responsive layout
+- Place components in `app/components/`; listing in `app/[content-type]/page.tsx`; update `app/[...slug]/page.tsx` to route by `__typename`
+
+# Field Types Reference
+- `text` – Rich HTML field
+- `string` – Short text (≤255 chars)
+- `image` – Media image
+- `datetime` – Date/time
+- `bool` – Boolean
+- `text[]` – Rich HTML list
+- `string[]` – Plain text list
+
+# Common Patterns
+- Product: `price (string)`, `product_images (image[])`, `in_stock (bool)`, `features (string[])`
+- Event: `event_date (datetime)`, `location (string)`, `speakers (string[])`
+- Team: `position (string)`, `profile_image (image)`, `bio (text)`
+- Case Study: `project_url (string)`, `technologies (string[])`, `project_images (image[])`
+
+# Troubleshooting
+- DCloud import fails: check OAuth, JSON structure, no `field_` in values
+- **Schema not updated**: ALWAYS run `npm run generate-schema` after DCloud imports
+- GraphQL errors: confirm content type exists, clear GraphQL cache, regenerate schema
+- Build errors: verify types, imports, query syntax
+- Content not showing: confirm field names match GraphQL schema; for HTML use `dangerouslySetInnerHTML={{ __html: field.processed }}`
+
+Debug snippets:
+```bash
+curl -k "${DRUPAL_BASE_URL}/api/dcloud-import/status"
+curl -k -X POST "${DRUPAL_BASE_URL}/oauth/token" \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "grant_type=client_credentials&client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}"
+# MOST IMPORTANT: Generate fresh schema
+npm run generate-schema
+# Check schema includes your content type
+grep -i [content_type] schema/schema.graphql
+# Test GraphQL query
+curl -k -X POST "${DRUPAL_BASE_URL}/graphql" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer [TOKEN]" \
+  -d '{"query":"{ nodeProducts(first:1){ nodes { id title price inStock features } } }"}'
+```
+
+# Best Practices
+1. **ALWAYS run `npm run generate-schema` immediately after DCloud imports**
+2. Create sample content for immediate testing
+3. Prefer `string[]` for simple lists; use `text[]` only when necessary
+4. Verify GraphQL field names against the actual schema
+5. Handle empty/missing data gracefully
+6. Keep TypeScript types accurate and complete
+7. Use semantic HTML and ensure responsive design
+
+# Success Criteria
+- Builds without errors; routes render correctly; navigation works; responsive; proper fallbacks; follows design patterns; integrates with existing auth and routing.

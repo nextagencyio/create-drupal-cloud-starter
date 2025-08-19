@@ -2,6 +2,8 @@
 
 A Next.js application integrated with Drupal Cloud, built with modern web technologies.
 
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/nextagencyio/drupal-cloud-starter&project-name=my-app)
+
 ## Features
 
 - ⚡ Next.js 15 with App Router

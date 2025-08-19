@@ -1,0 +1,96 @@
+{
+  "model": [
+    {
+      "bundle": "event",
+      "description": "Content type for managing events, conferences, and gatherings",
+      "label": "Event",
+      "body": true,
+      "fields": [
+        {
+          "id": "event_date",
+          "label": "Event Date",
+          "type": "datetime"
+        },
+        {
+          "id": "location",
+          "label": "Location",
+          "type": "string"
+        },
+        {
+          "id": "event_details",
+          "label": "Event Details",
+          "type": "paragraph(event_detail)[]"
+        },
+        {
+          "id": "tags",
+          "label": "Tags",
+          "type": "term(tags)[]"
+        },
+        {
+          "id": "featured",
+          "label": "Featured",
+          "type": "bool"
+        }
+      ]
+    },
+    {
+      "entity": "paragraph",
+      "bundle": "event_detail",
+      "description": "Reusable content blocks for event information and details",
+      "label": "Event Detail",
+      "fields": [
+        {
+          "id": "detail_title",
+          "label": "Detail Title",
+          "type": "string!"
+        },
+        {
+          "id": "detail_content",
+          "label": "Detail Content",
+          "type": "text"
+        },
+        {
+          "id": "detail_image",
+          "label": "Detail Image",
+          "type": "image"
+        }
+      ]
+    }
+  ],
+  "content": [
+    {
+      "id": "detail1",
+      "type": "paragraph.event_detail",
+      "values": {
+        "detail_title": "Schedule",
+        "detail_content": "The event will run from 9:00 AM to 5:00 PM with lunch break at noon."
+      }
+    },
+    {
+      "id": "detail2",
+      "type": "paragraph.event_detail",
+      "values": {
+        "detail_title": "Speakers",
+        "detail_content": "Join us for presentations by industry experts and thought leaders."
+      }
+    },
+    {
+      "id": "event1",
+      "type": "node.event",
+      "path": "/events/web-dev-conference-2024",
+      "values": {
+        "title": "Web Development Conference 2024",
+        "body": "<p>Join us for a full day of learning about modern web development...</p>",
+        "event_date": "2024-03-15T09:00:00",
+        "location": "Convention Center Downtown",
+        "tags": [
+          "web-development",
+          "conference",
+          "technology"
+        ],
+        "featured": true,
+        "event_details": ["@detail1", "@detail2"]
+      }
+    }
+  ]
+}
